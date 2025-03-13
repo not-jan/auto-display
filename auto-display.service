@@ -1,0 +1,16 @@
+[Unit]
+Description=Auto Display - Watches home directory for new files
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/.cargo/bin/auto-display
+Environment="HOME=%h"
+WorkingDirectory=%h
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

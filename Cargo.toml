@@ -1,0 +1,26 @@
+[package]
+name = "auto-display"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "auto-display"
+path = "src/bin.rs"
+
+[workspace]
+members = ["."]
+
+[workspace.dependencies]
+
+[dependencies]
+anyhow = "1.0.97"
+tokio = { version = "1.44.0", features = ["rt-multi-thread", "macros", "sync"] }
+inotify = "0.11.0"
+futures = "0.3.31"
+zbus = "5.5.0"
+clap = { version = "4.5.32", features = ["derive", "env"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tokio-stream = "0.1.17"
+ddc-i2c = { version = "0.2.2", features = ["with-linux", "with-linux-enumerate"] }
+ddc = "0.2.0"
