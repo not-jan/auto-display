@@ -60,7 +60,22 @@ impl<'a> DisplayController<'a> {
         let (on, off) = self.i2c.values();
 
         let handle = tokio::task::spawn_blocking(move || {
-            device.set_vcp_feature(POWER_MODE_FEATURE, if enabled { on } else { off })?;
+            if enabled {
+                // Try to set the power mode to on, but if it fails, try again
+                // 20 times with a 100ms delay between each try.
+                for i in 0..20 {
+                    match device.set_vcp_feature(POWER_MODE_FEATURE, on) {
+                        Ok(_) => return Ok(()),
+                        Err(_) if i == 9 => {
+                            return Err(anyhow::anyhow!("Failed to set power mode"));
+                        }
+                        _ => {}
+                    }
+                    std::thread::sleep(Duration::from_millis(100));
+                }
+            } else {
+                device.set_vcp_feature(POWER_MODE_FEATURE, off)?;
+            }
 
             Ok::<_, anyhow::Error>(())
         });
